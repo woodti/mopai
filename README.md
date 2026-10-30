@@ -12,7 +12,7 @@
 
 </div>
 
-<!-- TODO: 放一张演示 GIF：左边写 Markdown，右边切换公众号 / 小红书卡片 -->
+<p align="center"><img src="docs/demo.gif" alt="墨排演示：写 Markdown，切换主题，复制到公众号，生成小红书卡片" width="900"></p>
 
 ## 功能
 
