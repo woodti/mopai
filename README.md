@@ -10,6 +10,8 @@
 
 [在线使用](https://woodti.github.io/mopai/) · [English](#english)
 
+<a href="https://linux.do/"><img alt="LINUX DO" src="https://img.shields.io/badge/LINUX%20DO-%E6%96%B0%E7%9A%84%E7%90%86%E6%83%B3%E5%9E%8B%E7%A4%BE%E5%8C%BA-f8c12c"></a>
+
 </div>
 
 <p align="center"><img src="docs/demo.gif" alt="墨排演示：写 Markdown，切换主题，复制到公众号，生成小红书卡片" width="900"></p>
@@ -85,6 +87,10 @@ Everything runs in the browser. Nothing is uploaded.
 ```bash
 npm install && npm run dev
 ```
+
+## 致谢
+
+本项目分享于 [LINUX DO](https://linux.do/) —— 真诚、友善、团结、专业的技术社区。
 
 ## License
 
