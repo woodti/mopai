@@ -2,9 +2,9 @@
 
 # 墨排 Mopai
 
-**写一次 Markdown，同时发公众号和小红书。**
+**写一次 Markdown，同时发公众号、小红书和 X。**
 
-一键复制到微信公众号，样式不丢；同一篇文章自动分页，导出小红书图文卡片。
+一键复制到微信公众号，样式不丢；同一篇文章自动分页，导出小红书图文卡片；也能拆成 X（Twitter）推文串。
 
 纯前端 · 不用注册 · 内容不上传 · MIT 开源
 
@@ -35,6 +35,14 @@
 - 单独一行 `---` 手动分页
 - 单张下载或批量导出 ZIP
 
+**X 推文串**
+
+- 按 X 的计数规则拆条：中文和 emoji 算 2，链接固定算 23，每条不超过 280
+- 优先按段落拆，太长再按句子拆；标题和后面的正文放在同一条
+- 粗体、斜体转成 Unicode 粗体字符（英文和数字），X 上也能显示
+- 可以加 `1/n` 编号和首条 🧵，每条单独复制，已复制的打勾
+- Premium 用户可以切换成长推，不拆分
+
 ## 本地运行
 
 需要 Node.js 20 或更高版本。
@@ -54,6 +62,8 @@ npm run dev
 | `src/themes.ts` | 主题样式表、代码配色 |
 | `src/cards.ts` | 小红书卡片分页引擎：在隐藏容器里实测高度，按块和句子拆分 |
 | `src/CardsView.tsx` | 卡片渲染与 PNG / ZIP 导出 |
+| `src/tweets.ts` | Markdown → X 推文串：加权计数、拆条、Unicode 粗体 |
+| `src/XView.tsx` | 推文串预览与逐条复制 |
 | `src/App.tsx` | 编辑器、预览、设置面板 |
 
 ## 加一套主题
@@ -77,10 +87,11 @@ npm run dev
 
 ## English
 
-**Mopai** turns one Markdown article into two outputs:
+**Mopai** turns one Markdown article into three outputs:
 
 - **WeChat Official Account**: rich text with every style inlined, so it survives pasting into the WeChat editor. Includes 5 themes, syntax-highlighted code blocks, and external links converted to footnotes.
 - **Xiaohongshu (RedNote) carousel cards**: content auto-paginated by measured height (paragraphs split by sentence, code by line, lists by item). Exports 1080px PNG files one at a time or as a ZIP.
+- **X (Twitter) threads**: split by X's weighted character count (CJK counts as 2, URLs as 23), with `1/n` numbering and Unicode bold, plus copy buttons for each tweet.
 
 Everything runs in the browser. Nothing is uploaded.
 

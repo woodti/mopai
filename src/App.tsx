@@ -6,6 +6,7 @@ import { COLORS, THEMES, type ThemeId } from './themes'
 import { SAMPLE } from './sample'
 import { LOCAL_PREFIX, inlineBlobImages, loadImages, localIds, saveImage } from './images'
 import { CardsView } from './CardsView'
+import { XView } from './XView'
 
 export type Settings = {
   theme: ThemeId
@@ -21,9 +22,13 @@ export type Settings = {
   cover: boolean
   author: string
   pageNum: boolean
+  xLimit: number
+  xNumber: boolean
+  xBold: boolean
+  xEmoji: boolean
 }
 
-type Mode = 'wechat' | 'cards'
+type Mode = 'wechat' | 'cards' | 'x'
 
 const DEFAULTS: Settings = {
   theme: 'simple',
@@ -39,6 +44,10 @@ const DEFAULTS: Settings = {
   cover: true,
   author: '',
   pageNum: true,
+  xLimit: 280,
+  xNumber: true,
+  xBold: true,
+  xEmoji: true,
 }
 
 const REPO = 'https://github.com/woodti/mopai'
@@ -231,7 +240,7 @@ export default function App() {
         <div className="brand">
           <span className="logo">墨</span>
           <strong>墨排</strong>
-          <span className="tagline">Markdown 一键排版公众号 · 生成小红书卡片</span>
+          <span className="tagline">Markdown 一键排版公众号 · 小红书卡片 · X 推文</span>
         </div>
         <div className="mode-tabs" role="tablist">
           <button className={mode === 'wechat' ? 'active' : ''} onClick={() => setMode('wechat')}>
@@ -239,6 +248,9 @@ export default function App() {
           </button>
           <button className={mode === 'cards' ? 'active' : ''} onClick={() => setMode('cards')}>
             <Images size={16} /> 小红书卡片
+          </button>
+          <button className={mode === 'x' ? 'active' : ''} onClick={() => setMode('x')}>
+            <span className="x-logo">𝕏</span> X 推文
           </button>
         </div>
         <div className="actions">
@@ -329,58 +341,91 @@ export default function App() {
             <div className="phone">
               <div className="phone-article" ref={articleRef} dangerouslySetInnerHTML={{ __html: wechatHtml }} />
             </div>
-          ) : (
+          ) : mode === 'cards' ? (
             <CardsView md={md} s={s} imgVersion={imgVersion} onToast={setToast} />
+          ) : (
+            <XView md={md} s={s} onToast={setToast} />
           )}
         </section>
 
         <aside className="pane settings">
-          <Group title="主题">
-            <div className="theme-grid">
-              {THEMES.map((t) => (
-                <button key={t.id} className={`theme-btn ${s.theme === t.id ? 'active' : ''}`} onClick={() => set('theme', t.id)}>
-                  <b>{t.name}</b>
-                  <span>{t.desc}</span>
-                </button>
-              ))}
-            </div>
-          </Group>
-
-          <Group title="主色">
-            <div className="swatches">
-              {COLORS.map((c) => (
-                <button
-                  key={c}
-                  className={`swatch ${s.primary === c ? 'active' : ''}`}
-                  style={{ background: c }}
-                  onClick={() => set('primary', c)}
-                  aria-label={c}
+          {mode === 'x' ? (
+            <>
+              <Group title="单条上限">
+                <Seg
+                  value={s.xLimit}
+                  options={[
+                    { value: 280, label: '280 字（拆成推文串）' },
+                    { value: 25000, label: 'Premium 长推' },
+                  ]}
+                  onChange={(v) => set('xLimit', v)}
                 />
-              ))}
-              <label className="swatch custom" title="自定义颜色">
-                <input type="color" value={s.primary} onChange={(e) => set('primary', e.target.value)} />
-              </label>
-            </div>
-          </Group>
-
-          {mode === 'wechat' ? (
-            <Group title="正文字号">
-              <Seg value={s.fontSize} options={[14, 15, 16, 17].map((v) => ({ value: v, label: `${v}px` }))} onChange={(v) => set('fontSize', v)} />
-            </Group>
+              </Group>
+              <Group title="显示名">
+                <input className="text-input" value={s.author} maxLength={24} placeholder="例如 @your_handle" onChange={(e) => set('author', e.target.value)} />
+              </Group>
+              <Group title="选项">
+                <Toggle label="粗体 / 斜体转 Unicode" hint="X 不支持富文本，用数学字母模拟粗体，只对英文和数字有效" checked={s.xBold} onChange={(v) => set('xBold', v)} />
+                {s.xLimit < 1000 && (
+                  <>
+                    <Toggle label="末尾编号 1/n" checked={s.xNumber} onChange={(v) => set('xNumber', v)} />
+                    <Toggle label="首条加 🧵" checked={s.xEmoji} onChange={(v) => set('xEmoji', v)} />
+                  </>
+                )}
+              </Group>
+              <p className="hint">
+                <BookOpen size={14} />
+                按 X 规则计数：中文和 emoji 算 2，链接固定算 23。单独一行 --- 强制分条。图片会标成「配图」，发布时手动添加，也可以用小红书卡片当配图。
+              </p>
+            </>
           ) : (
             <>
-              <Group title="卡片尺寸">
-                <Seg value={s.ratio} options={RATIOS.map((r) => ({ value: r.id, label: r.name }))} onChange={(v) => set('ratio', v)} />
+              <Group title="主题">
+                <div className="theme-grid">
+                  {THEMES.map((t) => (
+                    <button key={t.id} className={`theme-btn ${s.theme === t.id ? 'active' : ''}`} onClick={() => set('theme', t.id)}>
+                      <b>{t.name}</b>
+                      <span>{t.desc}</span>
+                    </button>
+                  ))}
+                </div>
               </Group>
-              <Group title="卡片背景">
-                <Seg value={s.cardBg} options={CARD_BGS.map((b) => ({ value: b.id, label: b.name }))} onChange={(v) => set('cardBg', v)} />
+
+              <Group title="主色">
+                <div className="swatches">
+                  {COLORS.map((c) => (
+                    <button
+                      key={c}
+                      className={`swatch ${s.primary === c ? 'active' : ''}`}
+                      style={{ background: c }}
+                      onClick={() => set('primary', c)}
+                      aria-label={c}
+                    />
+                  ))}
+                  <label className="swatch custom" title="自定义颜色">
+                    <input type="color" value={s.primary} onChange={(e) => set('primary', e.target.value)} />
+                  </label>
+                </div>
               </Group>
-              <Group title="卡片字号">
-                <Seg value={s.cardFontSize} options={[16, 18, 20, 22].map((v) => ({ value: v, label: ['小', '中', '大', '特大'][(v - 16) / 2] }))} onChange={(v) => set('cardFontSize', v)} />
-              </Group>
-              <Group title="署名">
-                <input className="text-input" value={s.author} maxLength={24} placeholder="例如 @你的小红书名" onChange={(e) => set('author', e.target.value)} />
-              </Group>
+
+              {mode === 'wechat' ? (
+                <Group title="正文字号">
+                  <Seg value={s.fontSize} options={[14, 15, 16, 17].map((v) => ({ value: v, label: `${v}px` }))} onChange={(v) => set('fontSize', v)} />
+                </Group>
+              ) : (
+                <>
+                  <Group title="卡片尺寸">
+                    <Seg value={s.ratio} options={RATIOS.map((r) => ({ value: r.id, label: r.name }))} onChange={(v) => set('ratio', v)} />
+                  </Group>
+                  <Group title="卡片背景">
+                    <Seg value={s.cardBg} options={CARD_BGS.map((b) => ({ value: b.id, label: b.name }))} onChange={(v) => set('cardBg', v)} />
+                  </Group>
+                  <Group title="卡片字号">
+                    <Seg value={s.cardFontSize} options={[16, 18, 20, 22].map((v) => ({ value: v, label: ['小', '中', '大', '特大'][(v - 16) / 2] }))} onChange={(v) => set('cardFontSize', v)} />
+                  </Group>
+                  <Group title="署名">
+                    <input className="text-input" value={s.author} maxLength={24} placeholder="例如 @你的小红书名" onChange={(e) => set('author', e.target.value)} />
+                  </Group>
             </>
           )}
 
@@ -407,6 +452,8 @@ export default function App() {
               ? '可以直接粘贴或拖入本地图片。复制时会一并带上，如果公众号里没显示，就在后台重新插入。'
               : '单独一行 --- 可以手动分页。本地图片可以直接粘贴；网络图片需要图源允许跨域才能导出。'}
           </p>
+            </>
+          )}
         </aside>
       </main>
 
