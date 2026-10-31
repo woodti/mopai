@@ -14,7 +14,7 @@
 
 </div>
 
-<p align="center"><img src="docs/demo.gif" alt="墨排演示：写 Markdown，切换主题，复制到公众号，生成小红书卡片" width="900"></p>
+<p align="center"><img src="docs/demo.gif" alt="墨排演示：写 Markdown，切换主题，复制到公众号，生成小红书卡片，拆成 X 推文串" width="900"></p>
 
 ## 功能
 
