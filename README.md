@@ -47,7 +47,7 @@
 
 ## 让 AI 帮你推广：Skill、MCP 和命令行
 
-<p align="center"><img src="docs/cli-demo.gif" alt="命令行一行生成仓库推广素材；接入 MCP 后，在 AI 对话里一句话生成小红书卡片和推文串" width="900"></p>
+<p align="center"><img src="docs/cli-demo.gif" alt="命令行一行生成仓库推广素材；接入 MCP 后一句话生成卡片；装上 Skill 后 AI 自己写文案、出图、检查" width="900"></p>
 
 ### AI Skill（推荐）
 
