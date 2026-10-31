@@ -8,7 +8,7 @@
 
 纯前端 · 不用注册 · 内容不上传 · MIT 开源
 
-**还能让 AI 直接用：** 命令行 + MCP 服务器，一句话把文章或 GitHub 仓库变成全套推广素材。
+**还能让 AI 直接用：** AI Skill + MCP + 命令行，一句话把文章或 GitHub 仓库变成全套推广素材。
 
 [在线使用](https://woodti.github.io/mopai/) · [English](#english)
 
@@ -45,9 +45,29 @@
 - 可以加 `1/n` 编号和首条 🧵，每条单独复制，已复制的打勾
 - Premium 用户可以切换成长推，不拆分
 
-## 让 AI 帮你推广：命令行和 MCP
+## 让 AI 帮你推广：Skill、MCP 和命令行
 
 <p align="center"><img src="docs/cli-demo.gif" alt="命令行一行生成仓库推广素材；接入 MCP 后，在 AI 对话里一句话生成小红书卡片和推文串" width="900"></p>
+
+### AI Skill（推荐）
+
+一个装好就能用的 Skill，教 AI 怎么给每个平台写文案（小红书封面钩子、每张卡片放多少内容、推文串怎么开头），再调用墨排出图。装好后直接说「帮我把 owner/repo 做成小红书推广卡片」就行。
+
+**Claude Code**：插件里同时包含 Skill 和 MCP，一条命令装好：
+
+```
+/plugin install mopai --marketplace woodti/mopai
+```
+
+旧版本 Claude Code 分两步：`/plugin marketplace add woodti/mopai`，再 `/plugin install mopai@mopai`。
+
+**Cursor、Codex 等支持 Agent Skills 的工具**：
+
+```bash
+npx skills add woodti/mopai
+```
+
+Skill 内容见 [`skills/mopai/SKILL.md`](skills/mopai/SKILL.md)。
 
 ### 命令行
 
@@ -74,6 +94,8 @@ npx mopai-cli post.md --only xhs --theme marker --color orange --bg grid --autho
 Markdown 里的本地图片和网络图片都会自动嵌入，没有跨域问题。运行 `npx mopai-cli --help` 查看全部选项。
 
 ### MCP：在 Claude、Cursor 里直接用
+
+只要工具、不要写作指南的话，可以单独接入 MCP（装了上面的 Claude Code 插件就不用再装）。
 
 Claude Code：
 
@@ -130,6 +152,8 @@ npm run dev
 | `src/repo.ts` | GitHub 仓库 → 推广文案 |
 | `src/headless.tsx` | 无头渲染入口，命令行和 MCP 通过它调用排版引擎 |
 | `cli/` | 命令行、MCP 服务器、本地渲染（无头浏览器） |
+| `skills/mopai/SKILL.md` | AI Skill：各平台写作指南和使用流程 |
+| `.claude-plugin/` | Claude Code 插件和插件市场配置 |
 
 ## 加一套主题
 
@@ -166,6 +190,8 @@ npx mopai-cli post.md             # WeChat HTML + Xiaohongshu PNG cards + X thre
 npx mopai-cli repo owner/repo     # promo kit for any GitHub repository
 claude mcp add mopai -- npx -y mopai-cli mcp
 ```
+
+Agent skill: `/plugin install mopai --marketplace woodti/mopai` in Claude Code, or `npx skills add woodti/mopai` for other agents.
 
 MCP tools: `get_github_repo`, `render_xiaohongshu_cards`, `render_wechat_article`, `render_x_thread`, `promote_github_repo`. Rendering needs a local Chrome or Edge, or run `npx playwright install chromium`.
 

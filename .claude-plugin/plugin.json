@@ -1,0 +1,19 @@
+{
+  "name": "mopai",
+  "description": "墨排：把 Markdown 或 GitHub 仓库变成公众号排版、小红书卡片和 X 推文串。包含写作指南 Skill 和 MCP 渲染工具。",
+  "version": "0.2.0",
+  "author": {
+    "name": "woodti",
+    "url": "https://github.com/woodti"
+  },
+  "homepage": "https://woodti.github.io/mopai/",
+  "repository": "https://github.com/woodti/mopai",
+  "license": "MIT",
+  "keywords": ["markdown", "wechat", "xiaohongshu", "twitter", "social-media", "promotion"],
+  "mcpServers": {
+    "mopai": {
+      "command": "npx",
+      "args": ["-y", "mopai-cli@latest", "mcp"]
+    }
+  }
+}

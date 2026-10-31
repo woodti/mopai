@@ -1,0 +1,18 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "mopai",
+  "description": "墨排：Markdown → 公众号排版 / 小红书卡片 / X 推文串",
+  "owner": {
+    "name": "woodti",
+    "url": "https://github.com/woodti"
+  },
+  "plugins": [
+    {
+      "name": "mopai",
+      "description": "把 Markdown 或 GitHub 仓库变成公众号排版、小红书卡片和 X 推文串。包含写作指南 Skill 和 MCP 渲染工具。",
+      "source": "./",
+      "category": "productivity",
+      "homepage": "https://github.com/woodti/mopai"
+    }
+  ]
+}
