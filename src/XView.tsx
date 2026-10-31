@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Check, Copy } from 'lucide-react'
 import { toThread, weightedLength } from './tweets'
-import type { Settings } from './App'
+import type { Settings } from './settings'
 
 async function copyText(text: string) {
   try {

@@ -5,7 +5,7 @@ import JSZip from 'jszip'
 import { renderArticle, titleOf } from './markdown'
 import { CARD_BGS, CARD_W, PAD_TOP, PAD_X, RATIOS, paginate, type CardPage } from './cards'
 import { alpha, type StyleOptions } from './themes'
-import type { Settings } from './App'
+import type { Settings } from './settings'
 
 const PREVIEW_W = 260
 
@@ -47,9 +47,19 @@ function safeName(title: string) {
   return (title || '墨排卡片').replace(/[\\/:*?"<>|\s]+/g, '-').slice(0, 40)
 }
 
-export function CardsView({ md, s, imgVersion, onToast }: { md: string; s: Settings; imgVersion: number; onToast: (msg: string) => void }) {
+type Props = {
+  md: string
+  s: Settings
+  imgVersion: number
+  onToast: (msg: string) => void
+  /** 分页渲染完成后回调，无头渲染据此开始截图 */
+  onReady?: (count: number) => void
+}
+
+export function CardsView({ md, s, imgVersion, onToast, onReady }: Props) {
   const [pages, setPages] = useState<CardPage[]>([])
   const [busy, setBusy] = useState(false)
+  const [round, setRound] = useState(0)
   const cardRefs = useRef<(HTMLDivElement | null)[]>([])
 
   const height = RATIOS.find((r) => r.id === s.ratio)!.height
@@ -71,13 +81,19 @@ export function CardsView({ md, s, imgVersion, onToast }: { md: string; s: Setti
     const t = setTimeout(async () => {
       const article = renderArticle(md, { ...style, linkFootnote: false })
       const result = await paginate(article, { height, cover: s.cover, style })
-      if (!cancelled) setPages(result)
+      if (cancelled) return
+      setPages(result)
+      setRound((r) => r + 1)
     }, 250)
     return () => {
       cancelled = true
       clearTimeout(t)
     }
   }, [md, s.theme, s.primary, s.cardFontSize, s.serif, s.macCode, s.codeDark, s.cover, dark, height, imgVersion])
+
+  useEffect(() => {
+    if (round) onReady?.(pages.length)
+  }, [round])
 
   const shoot = (i: number) => {
     const node = cardRefs.current[i]
@@ -145,7 +161,7 @@ export function CardsView({ md, s, imgVersion, onToast }: { md: string; s: Setti
                     <h1 style={{ fontSize: coverSize(page.title, height), color: text }}>{page.title}</h1>
                     {page.subtitle && <p style={{ color: muted }}>{page.subtitle}</p>}
                     <div className="cover-foot" style={{ color: muted }}>
-                      <span>{s.author}</span>
+                      <span>{s.author || (s.brand ? '墨排 · mopai' : '')}</span>
                       <span style={{ color: s.primary }}>滑动阅读 →</span>
                     </div>
                   </div>
@@ -158,6 +174,7 @@ export function CardsView({ md, s, imgVersion, onToast }: { md: string; s: Setti
                     <div className="card-content" style={{ top: PAD_TOP, left: PAD_X }} dangerouslySetInnerHTML={{ __html: page.html }} />
                     <div className="card-foot" style={{ left: PAD_X, right: PAD_X, color: muted }}>
                       <span>{s.author}</span>
+                      {s.brand && <span className="brand-mark">墨排 · mopai</span>}
                       {s.pageNum && (
                         <span>
                           {String(i + 1).padStart(2, '0')} / {String(total).padStart(2, '0')}

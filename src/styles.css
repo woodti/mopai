@@ -738,3 +738,70 @@ button {
 .btn.copied {
   color: #00a65a;
 }
+
+.brand-mark {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 11px;
+  opacity: 0.55;
+}
+
+/* 仓库导入弹窗 */
+
+.dialog-mask {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(24, 24, 27, 0.4);
+}
+
+.dialog {
+  width: 100%;
+  max-width: 440px;
+  padding: 22px;
+  border-radius: 14px;
+  background: var(--panel);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+}
+
+.dialog h3 {
+  margin: 0 0 6px;
+  font-size: 16px;
+}
+
+.dialog p {
+  margin: 0 0 14px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.dialog .dialog-error {
+  margin: 10px 0 0;
+  color: #dc2626;
+}
+
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.dialog .dialog-tip {
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  font-size: 12px;
+}
+
+.dialog-tip code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: var(--bg);
+  font-size: 11px;
+}

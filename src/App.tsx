@@ -1,54 +1,16 @@
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { BookOpen, Copy, FileUp, Github, ImagePlus, Images, MessageSquareText, RotateCcw } from 'lucide-react'
 import { renderArticle } from './markdown'
-import { CARD_BGS, RATIOS, type CardBg, type Ratio } from './cards'
-import { COLORS, THEMES, type ThemeId } from './themes'
+import { CARD_BGS, RATIOS } from './cards'
+import { COLORS, THEMES } from './themes'
+import { DEFAULTS, type Settings } from './settings'
+import { fetchRepo, promoMarkdown } from './repo'
 import { SAMPLE } from './sample'
 import { LOCAL_PREFIX, inlineBlobImages, loadImages, localIds, saveImage } from './images'
 import { CardsView } from './CardsView'
 import { XView } from './XView'
 
-export type Settings = {
-  theme: ThemeId
-  primary: string
-  fontSize: number
-  serif: boolean
-  macCode: boolean
-  codeDark: boolean
-  linkFootnote: boolean
-  ratio: Ratio
-  cardBg: CardBg
-  cardFontSize: number
-  cover: boolean
-  author: string
-  pageNum: boolean
-  xLimit: number
-  xNumber: boolean
-  xBold: boolean
-  xEmoji: boolean
-}
-
 type Mode = 'wechat' | 'cards' | 'x'
-
-const DEFAULTS: Settings = {
-  theme: 'simple',
-  primary: COLORS[0],
-  fontSize: 15,
-  serif: false,
-  macCode: true,
-  codeDark: false,
-  linkFootnote: true,
-  ratio: '3:4',
-  cardBg: 'paper',
-  cardFontSize: 18,
-  cover: true,
-  author: '',
-  pageNum: true,
-  xLimit: 280,
-  xNumber: true,
-  xBold: true,
-  xEmoji: true,
-}
 
 const REPO = 'https://github.com/woodti/mopai'
 
@@ -206,6 +168,15 @@ export default function App() {
     return true
   }
 
+  const [repoOpen, setRepoOpen] = useState(false)
+
+  const importRepo = async (input: string) => {
+    const info = await fetchRepo(input)
+    setMd(promoMarkdown(info))
+    setRepoOpen(false)
+    setToast(`已根据 ${info.fullName} 生成推广文案，可以继续修改`)
+  }
+
   const importFile = async (file: File | undefined) => {
     if (!file) return
     if (!/\.(md|markdown|txt)$/i.test(file.name) && !file.type.startsWith('text/')) {
@@ -280,6 +251,9 @@ export default function App() {
               Markdown <em>{words} 字</em>
             </span>
             <div className="pane-tools">
+              <button className="btn ghost small" onClick={() => setRepoOpen(true)} title="输入 GitHub 仓库，自动生成推广文案">
+                <Github size={14} /> 仓库
+              </button>
               <button className="btn ghost small" onClick={() => imageRef.current?.click()} title="插入本地图片，也可以直接粘贴或拖进来">
                 <ImagePlus size={14} /> 图片
               </button>
@@ -442,6 +416,7 @@ export default function App() {
               <>
                 <Toggle label="一级标题做封面" checked={s.cover} onChange={(v) => set('cover', v)} />
                 <Toggle label="显示页码" checked={s.pageNum} onChange={(v) => set('pageNum', v)} />
+                <Toggle label="底部显示「墨排」小字" hint="帮墨排被更多人看到，谢谢" checked={s.brand} onChange={(v) => set('brand', v)} />
               </>
             )}
           </Group>
@@ -457,7 +432,57 @@ export default function App() {
         </aside>
       </main>
 
+      {repoOpen && <RepoDialog onClose={() => setRepoOpen(false)} onSubmit={importRepo} />}
       {toast && <div className="toast">{toast}</div>}
+    </div>
+  )
+}
+
+function RepoDialog({ onClose, onSubmit }: { onClose: () => void; onSubmit: (repo: string) => Promise<void> }) {
+  const [value, setValue] = useState('')
+  const [busy, setBusy] = useState(false)
+  const [error, setError] = useState('')
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!value.trim()) return
+    setBusy(true)
+    setError('')
+    try {
+      await onSubmit(value)
+    } catch (err) {
+      setError((err as Error).message)
+    } finally {
+      setBusy(false)
+    }
+  }
+
+  return (
+    <div className="dialog-mask" onClick={onClose}>
+      <form className="dialog" onClick={(e) => e.stopPropagation()} onSubmit={submit}>
+        <h3>从 GitHub 仓库生成推广素材</h3>
+        <p>读取仓库的 README 和简介，生成一篇推广文案，再切换公众号、小红书或 X 输出。会替换编辑区的内容。</p>
+        <input
+          className="text-input"
+          autoFocus
+          value={value}
+          placeholder="owner/repo 或 https://github.com/owner/repo"
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => e.key === 'Escape' && onClose()}
+        />
+        {error && <p className="dialog-error">{error}</p>}
+        <div className="dialog-actions">
+          <button type="button" className="btn ghost" onClick={onClose}>
+            取消
+          </button>
+          <button type="submit" className="btn primary" disabled={busy || !value.trim()}>
+            {busy ? '读取中…' : '生成'}
+          </button>
+        </div>
+        <p className="dialog-tip">
+          想让 AI 帮你写得更好？用命令行 <code>npx mopai repo owner/repo</code>，或接入 MCP 让 Claude、Cursor 直接生成。
+        </p>
+      </form>
     </div>
   )
 }

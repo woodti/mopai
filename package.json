@@ -1,28 +1,64 @@
 {
   "name": "mopai",
-  "private": true,
-  "version": "0.1.0",
-  "type": "module",
+  "version": "0.2.0",
+  "description": "Markdown → 公众号排版 / 小红书卡片 / X 推文串。网页版、命令行和 MCP 服务器，可以让 AI 直接把文章或 GitHub 仓库变成推广素材。",
+  "keywords": [
+    "markdown",
+    "wechat",
+    "xiaohongshu",
+    "rednote",
+    "twitter",
+    "x",
+    "mcp",
+    "cli",
+    "social-media"
+  ],
+  "homepage": "https://woodti.github.io/mopai/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/woodti/mopai.git"
+  },
+  "bugs": "https://github.com/woodti/mopai/issues",
   "license": "MIT",
+  "author": "woodti",
+  "type": "module",
+  "bin": {
+    "mopai": "bin/mopai.js"
+  },
+  "files": [
+    "bin",
+    "dist",
+    "LICENSE",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && tsc -p tsconfig.cli.json && vite build && node scripts/build-cli.mjs",
     "preview": "vite preview",
-    "typecheck": "tsc -b --pretty false"
+    "typecheck": "tsc -b --pretty false && tsc -p tsconfig.cli.json --pretty false",
+    "prepublishOnly": "npm run build"
   },
   "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "marked": "^18.1.2",
+    "playwright-core": "^1.64.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^4.7.0",
+    "esbuild": "^0.28.2",
     "highlight.js": "^11.12.0",
     "html-to-image": "^1.11.13",
     "jszip": "^3.10.2",
     "lucide-react": "^0.468.0",
-    "marked": "^18.1.2",
     "react": "^19.3.1",
-    "react-dom": "^19.3.1"
-  },
-  "devDependencies": {
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^4.7.0",
+    "react-dom": "^19.3.1",
     "typescript": "~5.8.3",
     "vite": "^6.4.5"
   }
