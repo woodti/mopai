@@ -34,10 +34,10 @@ const HELP = `墨排 mopai：Markdown → 公众号排版 / 小红书卡片 / X 
   -v, --version                显示版本
 
 示例
-  npx mopai post.md
-  npx mopai post.md --only xhs --theme marker --color orange --bg grid
-  npx mopai repo woodti/mopai
-  npx mopai repo https://github.com/vitejs/vite --md > promo.md
+  npx mopai-cli post.md
+  npx mopai-cli post.md --only xhs --theme marker --color orange --bg grid
+  npx mopai-cli repo woodti/mopai
+  npx mopai-cli repo https://github.com/vitejs/vite --md > promo.md
 `
 
 async function version() {

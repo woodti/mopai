@@ -1,5 +1,5 @@
 {
-  "name": "mopai",
+  "name": "mopai-cli",
   "version": "0.2.0",
   "description": "Markdown → 公众号排版 / 小红书卡片 / X 推文串。网页版、命令行和 MCP 服务器，可以让 AI 直接把文章或 GitHub 仓库变成推广素材。",
   "keywords": [
@@ -23,6 +23,7 @@
   "author": "woodti",
   "type": "module",
   "bin": {
+    "mopai-cli": "bin/mopai.js",
     "mopai": "bin/mopai.js"
   },
   "files": [

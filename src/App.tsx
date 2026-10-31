@@ -480,7 +480,7 @@ function RepoDialog({ onClose, onSubmit }: { onClose: () => void; onSubmit: (rep
           </button>
         </div>
         <p className="dialog-tip">
-          想让 AI 帮你写得更好？用命令行 <code>npx mopai repo owner/repo</code>，或接入 MCP 让 Claude、Cursor 直接生成。
+          想让 AI 帮你写得更好？用命令行 <code>npx mopai-cli repo owner/repo</code>，或接入 MCP 让 Claude、Cursor 直接生成。
         </p>
       </form>
     </div>

@@ -51,13 +51,13 @@
 
 ```bash
 # 一篇 Markdown → 公众号排版 + 小红书卡片 + X 推文串
-npx mopai post.md
+npx mopai-cli post.md
 
 # 一个 GitHub 仓库 → 全套推广素材（推广文案、卡片、推文串）
-npx mopai repo owner/repo
+npx mopai-cli repo owner/repo
 
 # 只要小红书卡片，换个主题和背景
-npx mopai post.md --only xhs --theme marker --color orange --bg grid --author @你的名字
+npx mopai-cli post.md --only xhs --theme marker --color orange --bg grid --author @你的名字
 ```
 
 输出在 `./mopai-out/<标题>/` 下：
@@ -67,16 +67,16 @@ npx mopai post.md --only xhs --theme marker --color orange --bg grid --author @�
 | `wechat.html` | 用浏览器打开，点「复制到公众号」，去后台粘贴 |
 | `xiaohongshu/01.png …` | 小红书卡片，1080px 宽 |
 | `x-thread.txt` | 推文串，每条之间用分隔线隔开 |
-| `source.md` | `repo` 命令生成的推广文案，改完后可以用 `npx mopai source.md` 重新生成 |
+| `source.md` | `repo` 命令生成的推广文案，改完后可以用 `npx mopai-cli source.md` 重新生成 |
 
-Markdown 里的本地图片和网络图片都会自动嵌入，没有跨域问题。运行 `npx mopai --help` 查看全部选项。
+Markdown 里的本地图片和网络图片都会自动嵌入，没有跨域问题。运行 `npx mopai-cli --help` 查看全部选项。
 
 ### MCP：在 Claude、Cursor 里直接用
 
 Claude Code：
 
 ```bash
-claude mcp add mopai -- npx -y mopai mcp
+claude mcp add mopai -- npx -y mopai-cli mcp
 ```
 
 Claude Desktop、Cursor 等客户端，在 MCP 配置里加上：
@@ -84,7 +84,7 @@ Claude Desktop、Cursor 等客户端，在 MCP 配置里加上：
 ```json
 {
   "mcpServers": {
-    "mopai": { "command": "npx", "args": ["-y", "mopai", "mcp"] }
+    "mopai": { "command": "npx", "args": ["-y", "mopai-cli", "mcp"] }
   }
 }
 ```
@@ -160,9 +160,9 @@ Everything runs in the browser. Nothing is uploaded.
 **For AI agents and the command line**, Mopai also ships a CLI and an MCP server:
 
 ```bash
-npx mopai post.md                 # WeChat HTML + Xiaohongshu PNG cards + X thread
-npx mopai repo owner/repo         # promo kit for any GitHub repository
-claude mcp add mopai -- npx -y mopai mcp
+npx mopai-cli post.md             # WeChat HTML + Xiaohongshu PNG cards + X thread
+npx mopai-cli repo owner/repo     # promo kit for any GitHub repository
+claude mcp add mopai -- npx -y mopai-cli mcp
 ```
 
 MCP tools: `get_github_repo`, `render_xiaohongshu_cards`, `render_wechat_article`, `render_x_thread`, `promote_github_repo`. Rendering needs a local Chrome or Edge, or run `npx playwright install chromium`.
