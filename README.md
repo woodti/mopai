@@ -47,6 +47,8 @@
 
 ## 让 AI 帮你推广：命令行和 MCP
 
+<p align="center"><img src="docs/cli-demo.gif" alt="命令行一行生成仓库推广素材；接入 MCP 后，在 AI 对话里一句话生成小红书卡片和推文串" width="900"></p>
+
 ### 命令行
 
 ```bash
